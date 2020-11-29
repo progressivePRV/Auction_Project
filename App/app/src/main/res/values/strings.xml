@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">AuctionApp</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="all_auctions" >All Auctions</string>
+    <string name="placed_bids">Placed Bids</string>
+    <string name="won_items">Won Items</string>
+    <string name="Auction_placed">Auction Placed</string>
+    <string name="cash">Cash</string>
+</resources>
