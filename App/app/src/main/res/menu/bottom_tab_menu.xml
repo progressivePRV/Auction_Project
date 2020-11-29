@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/allAuctionFrag"
+        android:icon="@drawable/list_of_items"
+        android:title="@string/all_auctions" />
+    <item
+        android:id="@+id/currentBidFrag"
+        android:icon="@drawable/current_bid_items"
+        android:title="@string/placed_bids" />
+    <item
+        android:id="@+id/wonAuctionsFrag"
+        android:icon="@drawable/completed_auctions"
+        android:title="@string/won_items" />
+    <item
+        android:id="@+id/auctionPlacedFrag"
+        android:icon="@drawable/owver_created_auctions"
+        android:title="@string/Auction_placed" />
+</menu>
