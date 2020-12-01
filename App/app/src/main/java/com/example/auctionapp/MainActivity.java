@@ -33,7 +33,7 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = "okay";
+    private static final String TAG = "okay_MainActivity";
     private static final int GOOGLE_API_REQUEST_RESULT = 1111;
 
 
@@ -79,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         RetriveFirebaseMessageingToken();
+        CheckForIntentData();
 
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_inMain);
         NavController navController = navHostFragment.getNavController();
@@ -86,6 +87,14 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(bottomNav, navController);
 
 
+    }
+
+    private void CheckForIntentData() {
+        Intent i = getIntent();
+        if(i!=null){
+            Log.d(TAG, "CheckForIntentData: intent was not empty in main activity");
+
+        }
     }
 
     private void RetriveFirebaseMessageingToken() {

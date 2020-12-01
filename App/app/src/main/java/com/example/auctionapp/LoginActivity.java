@@ -21,6 +21,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private ProgressDialog progressDialog;
+    private static final String TAG = "okay_LoginActivity";
 
     @Override
     protected void onStart() {
@@ -47,6 +48,8 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         setTitle("Login");
+
+        CheckForIntentData();
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -100,6 +103,15 @@ public class LoginActivity extends AppCompatActivity {
         progressDialog.setMessage("Loading");
         progressDialog.setCancelable(false);
         progressDialog.show();
+    }
+
+    private void CheckForIntentData() {
+        Intent i = getIntent();
+        if(i!=null){
+            Log.d(TAG, "CheckForIntentData: intent was not empty in login Activity");
+            Log.d(TAG, "CheckForIntentData: intent action=>"+i.getAction());
+            Log.d(TAG, "CheckForIntentData: intent data one=>"+i.getStringExtra("one"));
+        }
     }
 
     public void hideProgressBarDialog()

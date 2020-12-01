@@ -33,6 +33,7 @@ public class CurrentBidFrag extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private static final String TAG = "okay";
 
     private FirebaseFunctions mFunctions;
 
@@ -75,7 +76,9 @@ public class CurrentBidFrag extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_current_bid, container, false);
+        View view = inflater.inflate(R.layout.fragment_current_bid, container, false);
+        Log.d(TAG, "onCreateView: CurrentBid frag");
+        return view;
     }
 
     @Override
@@ -83,4 +86,9 @@ public class CurrentBidFrag extends Fragment {
         super.onViewCreated(view, savedInstanceState);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume: CurrentBid frag");
+    }
 }
