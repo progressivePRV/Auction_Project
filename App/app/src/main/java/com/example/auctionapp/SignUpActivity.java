@@ -121,7 +121,7 @@ public class SignUpActivity extends AppCompatActivity {
                         data.put("lastName",lname_et.getText().toString());
                         data.put("balance",200);
                         data.put("deviceToken",token);
-                        data.put("uid","a1");
+//                        data.put("uid","a1");
                         mFunctions.getHttpsCallable("createUser")
                                 .call(data)
                                 .addOnCompleteListener(new OnCompleteListener<HttpsCallableResult>() {
