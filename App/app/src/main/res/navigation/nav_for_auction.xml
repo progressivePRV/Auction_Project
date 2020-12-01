@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_for_auction"
+    app:startDestination="@id/currentBidFrag">
+
+    <fragment
+        android:id="@+id/currentBidFrag"
+        android:name="com.example.auctionapp.CurrentBidFrag"
+        android:label="fragment_current_bid"
+        tools:layout="@layout/fragment_current_bid" />
+    <fragment
+        android:id="@+id/allAuctionFrag"
+        android:name="com.example.auctionapp.AllAuctionFrag"
+        android:label="fragment_all_auction"
+        tools:layout="@layout/fragment_all_auction" />
+    <fragment
+        android:id="@+id/auctionPlacedFrag"
+        android:name="com.example.auctionapp.AuctionPlacedFrag"
+        android:label="fragment_auction_placed"
+        tools:layout="@layout/fragment_auction_placed" />
+    <fragment
+        android:id="@+id/wonAuctionsFrag"
+        android:name="com.example.auctionapp.WonAuctionsFrag"
+        android:label="fragment_won_auctions"
+        tools:layout="@layout/fragment_won_auctions" />
+</navigation>
