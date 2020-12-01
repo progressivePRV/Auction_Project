@@ -1,12 +1,14 @@
 package com.example.auctionapp;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -14,6 +16,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -22,6 +26,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.functions.FirebaseFunctions;
 import com.google.firebase.functions.FirebaseFunctionsException;
 import com.google.firebase.functions.HttpsCallableResult;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,6 +34,7 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "okay";
+    private static final int GOOGLE_API_REQUEST_RESULT = 1111;
 
 
     @Override
@@ -55,13 +61,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        // check if play service is available or not
+        if (isGooglePlayServicesAvailable()){
+            Log.d(TAG, "onResume: play service is not active");
+        }else{
+            Log.d(TAG, "onResume: play service are active");
+        }
+
+    }
+
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-
-
+        RetriveFirebaseMessageingToken();
 
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_inMain);
         NavController navController = navHostFragment.getNavController();
@@ -71,12 +88,42 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void RetriveFirebaseMessageingToken() {
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        if (!task.isSuccessful()) {
+                            Log.d(TAG, "onComplete: error while generating firebase messaging token");
+                            //Log.w(TAG, "Fetching FCM registration token failed", task.getException());
+                            return;
+                        }
+                        // Get new FCM registration token
+                        String token = task.getResult();
+                        Log.d(TAG, "onComplete: new toke retrived from FirebaseMessageingToken=>"+token);
+                    }
+                });
+    }
 
+    public boolean isGooglePlayServicesAvailable() {
+        GoogleApiAvailability googleApiAvailability = GoogleApiAvailability.getInstance();
+        int status = googleApiAvailability.isGooglePlayServicesAvailable(this);
+        if(status != ConnectionResult.SUCCESS) {
+            if(googleApiAvailability.isUserResolvableError(status)) {
+                googleApiAvailability.getErrorDialog(this, status, GOOGLE_API_REQUEST_RESULT).show();
+            }
+            return false;
+        }
+        return true;
+    }
 
-//    @Override
-//    public boolean onSupportNavigateUp() {
-//        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_container);
-//        return NavigationUI.navigateUp(navController, appBarConfiguration)
-//                || super.onSupportNavigateUp();
-//    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && requestCode == GOOGLE_API_REQUEST_RESULT){
+            Log.d(TAG, "onActivityResult: google api/play service was enabled");
+        }else if(resultCode == RESULT_CANCELED && requestCode == GOOGLE_API_REQUEST_RESULT){
+            Log.d(TAG, "onActivityResult: google api/play service was disabled");
+        }
+    }
 }

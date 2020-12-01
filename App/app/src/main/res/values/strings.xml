@@ -20,4 +20,5 @@
     <string name="cancel">Cancel</string>
     <string name="AutoFillHint" />
     <string name="logout">logout</string>
+    <string name="default_notification_channel_id">Auction_App_FMC_Channel_ID</string>
 </resources>
