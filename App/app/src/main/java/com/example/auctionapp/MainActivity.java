@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.logout:
                 FirebaseAuth.getInstance().signOut();
                 Toast.makeText(this, "Successfully Logged Out", Toast.LENGTH_SHORT).show();
+                Intent i = new Intent(this,LoginActivity.class);
                 finish();
                 return true;
             default:
@@ -78,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        RetriveFirebaseMessageingToken();
+//        RetriveFirebaseMessageingToken();
         CheckForIntentData();
 
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_inMain);
@@ -97,22 +98,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void RetriveFirebaseMessageingToken() {
-        FirebaseMessaging.getInstance().getToken()
-                .addOnCompleteListener(new OnCompleteListener<String>() {
-                    @Override
-                    public void onComplete(@NonNull Task<String> task) {
-                        if (!task.isSuccessful()) {
-                            Log.d(TAG, "onComplete: error while generating firebase messaging token");
-                            //Log.w(TAG, "Fetching FCM registration token failed", task.getException());
-                            return;
-                        }
-                        // Get new FCM registration token
-                        String token = task.getResult();
-                        Log.d(TAG, "onComplete: new toke retrived from FirebaseMessageingToken=>"+token);
-                    }
-                });
-    }
 
     public boolean isGooglePlayServicesAvailable() {
         GoogleApiAvailability googleApiAvailability = GoogleApiAvailability.getInstance();

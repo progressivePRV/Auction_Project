@@ -2,6 +2,7 @@ package com.example.auctionapp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -11,15 +12,23 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.functions.FirebaseFunctions;
+import com.google.firebase.functions.HttpsCallableResult;
+import com.google.firebase.messaging.FirebaseMessaging;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
+    private FirebaseFunctions mFunctions;
     private ProgressDialog progressDialog;
     private static final String TAG = "okay_LoginActivity";
 
@@ -36,6 +45,7 @@ public class LoginActivity extends AppCompatActivity {
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             intent.putExtra("user",currentUser.getUid());
             startActivity(intent);
+            finish();
         } else{
             Log.d("demo","Please login to go see your contacts");
             hideProgressBarDialog();
@@ -48,10 +58,9 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         setTitle("Login");
-
         CheckForIntentData();
-
         mAuth = FirebaseAuth.getInstance();
+        mFunctions = FirebaseFunctions.getInstance();
 
         findViewById(R.id.buttonLogin).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,6 +82,8 @@ public class LoginActivity extends AppCompatActivity {
                                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                         intent.putExtra("user",user.getUid());
                                         startActivity(intent);
+                                        SendRegistrationToServer();
+                                        finish();
                                     } else {
                                         // If sign in fails, display a message to the user.
                                         Log.w("demo", "signInWithEmail:failure", task.getException());
@@ -95,6 +106,46 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    private void SendRegistrationToServer() {
+
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        if (!task.isSuccessful()) {
+                            Log.d(TAG, "onComplete: error while generating firebase messaging token");
+                            //Log.w(TAG, "Fetching FCM registration token failed", task.getException());
+                            return;
+                        }
+                        // Get new FCM registration token
+                        String token = task.getResult();
+                        Map<String, Object> data = new HashMap<>();
+                        data.put("deviceToken", token);
+                        mFunctions.getHttpsCallable("updateDeviceToken")
+                                .call(data)
+                                .continueWith(new Continuation<HttpsCallableResult, Object>() {
+                                    @Override
+                                    public Object then(@NonNull Task<HttpsCallableResult> task) throws Exception {
+                                        String result = (String) task.getResult().getData();
+                                        Log.d(TAG, "then: result in continue with");
+                                        return null;
+                                    }
+                                });
+//                                .addOnCompleteListener(new OnCompleteListener<HttpsCallableResult>() {
+//                                    @Override
+//                                    public void onComplete(@NonNull Task<HttpsCallableResult> task) {
+//                                        if (task.isSuccessful()) {
+//                                            Log.d(TAG, "onComplete: device toke sent to server successful");
+//                                        } else {
+//                                            Log.d(TAG, "onComplete: error while sending token to the server" + task.getException().getStackTrace());
+//                                        }
+//                                    }
+//                                });
+                    }
+                });
+
     }
 
     public void showProgressBarDialog()
