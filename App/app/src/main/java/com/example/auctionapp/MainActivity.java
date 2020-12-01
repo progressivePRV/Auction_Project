@@ -12,12 +12,24 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.functions.FirebaseFunctions;
+import com.google.firebase.functions.FirebaseFunctionsException;
+import com.google.firebase.functions.HttpsCallableResult;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "okay";
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -32,6 +44,11 @@ public class MainActivity extends AppCompatActivity {
             case R.id.cash_menu:
                 Log.d(TAG, "onOptionsItemSelected: open add cash activity");
                 return true;
+            case R.id.logout:
+                FirebaseAuth.getInstance().signOut();
+                Toast.makeText(this, "Successfully Logged Out", Toast.LENGTH_SHORT).show();
+                finish();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -43,12 +60,18 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-            NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_inMain);
-            NavController navController = navHostFragment.getNavController();
-            BottomNavigationView bottomNav = findViewById(R.id.bottomNavigationView_in_main);
-            NavigationUI.setupWithNavController(bottomNav, navController);
+
+
+
+        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_inMain);
+        NavController navController = navHostFragment.getNavController();
+        BottomNavigationView bottomNav = findViewById(R.id.bottomNavigationView_in_main);
+        NavigationUI.setupWithNavController(bottomNav, navController);
+
 
     }
+
+
 
 //    @Override
 //    public boolean onSupportNavigateUp() {

@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "331286085951",
+    "firebase_url": "https://autionapp-7697e.firebaseio.com",
+    "project_id": "autionapp-7697e",
+    "storage_bucket": "autionapp-7697e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:331286085951:android:472d50a72e793b99b5138a",
+        "android_client_info": {
+          "package_name": "com.example.auctionapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "331286085951-bgnikk3ui6e9ar6disecddphksh91aur.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDoIF3OrJ9Ie9poV4jk8ONMfzu8hT46s-I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "331286085951-bgnikk3ui6e9ar6disecddphksh91aur.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
