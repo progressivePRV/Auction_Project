@@ -48,11 +48,12 @@ public class AddMoney extends AppCompatActivity {
                                         Log.d(TAG, "onComplete: device add cash to the server successful");
                                         Toast.makeText(AddMoney.this, "Money Added Successfully", Toast.LENGTH_SHORT).show();
                                         textAddCashAmount.setText("");
+                                        finish();
                                         hideProgressBarDialog();
                                     }else{
                                         Log.d(TAG, "onComplete: error while sending add cash to the server"+task.getException().getMessage());
                                         Log.d(TAG, "onComplete: data=>"+data);
-                                        Toast.makeText(AddMoney.this, "Some error occurred internally", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(AddMoney.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                                         hideProgressBarDialog();
                                     }
                                 }

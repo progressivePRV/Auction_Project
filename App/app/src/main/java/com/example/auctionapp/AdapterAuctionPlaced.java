@@ -1,33 +1,26 @@
 package com.example.auctionapp;
 
-import android.content.Context;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Typeface;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 
-public class AdapterAllAuctions extends RecyclerView.Adapter<AdapterAllAuctions.MyViewHolder> {
+public class AdapterAuctionPlaced extends RecyclerView.Adapter<AdapterAuctionPlaced.MyViewHolder> {
     private ArrayList<AuctionItems> mDataset;
     public static InteractWithRecyclerView interact;
     private FirebaseAuth mAuth;
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public AdapterAllAuctions(ArrayList<AuctionItems> myDataset, InteractWithRecyclerView ctx) {
+    public AdapterAuctionPlaced(ArrayList<AuctionItems> myDataset, InteractWithRecyclerView ctx) {
         mDataset = myDataset;
         interact = ctx;
         mAuth = FirebaseAuth.getInstance();
@@ -35,8 +28,8 @@ public class AdapterAllAuctions extends RecyclerView.Adapter<AdapterAllAuctions.
 
     // Create new views (invoked by the layout manager)
     @Override
-    public AdapterAllAuctions.MyViewHolder onCreateViewHolder(ViewGroup parent,
-                                                                      int viewType) {
+    public AdapterAuctionPlaced.MyViewHolder onCreateViewHolder(ViewGroup parent,
+                                                                int viewType) {
         // create a new view
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.list_all_auctions, parent, false);
@@ -54,13 +47,13 @@ public class AdapterAllAuctions extends RecyclerView.Adapter<AdapterAllAuctions.
         holder.allAuctionsStartBid.setText("$" + auctionItems.start_bid);
         holder.allAuctionsDate.setText(auctionItems.auction_start_date);
 
-        if(auctionItems.owner_id.equals(mAuth.getUid())){
-            holder.dividerAllAuction.setBackgroundColor(Color.parseColor("#E5E827"));
-        }else if(auctionItems.current_highest_bid_user.equals(mAuth.getUid())){
-            holder.dividerAllAuction.setBackgroundColor(Color.parseColor("#F91B1B"));
-        }else{
+        if(auctionItems.auction_status.equals("created")){
+            holder.dividerAllAuction.setBackgroundColor(Color.parseColor("#ED8911"));
+        }else if(auctionItems.auction_status.equals("in_progress")){
+            holder.dividerAllAuction.setBackgroundColor(Color.parseColor("#C53CEE"));
+        }else if(auctionItems.auction_status.equals("complete")){
             //The user can bid on this item
-            holder.dividerAllAuction.setBackgroundColor(Color.parseColor("#FFFFFF"));
+            holder.dividerAllAuction.setBackgroundColor(Color.parseColor("#0F4FEC"));
         }
 
         holder.allAuctionsConstraintLayout.setOnClickListener(new View.OnClickListener() {

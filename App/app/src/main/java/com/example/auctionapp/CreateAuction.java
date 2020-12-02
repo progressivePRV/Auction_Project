@@ -58,10 +58,11 @@ public class CreateAuction extends AppCompatActivity {
                                             createAuctionStartBid.setText("");
                                             createAuctionItemName.setText("");
                                             hideProgressBarDialog();
+                                            finish();
                                         }else{
                                             Log.d(TAG, "onComplete: error while Post New Item to the serverr"+task.getException().getMessage());
                                             Log.d(TAG, "onComplete: data=>"+data);
-                                            Toast.makeText(CreateAuction.this, "Some error occurred internally", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(CreateAuction.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                                             hideProgressBarDialog();
                                         }
                                     }

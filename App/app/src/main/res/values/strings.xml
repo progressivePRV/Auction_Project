@@ -36,4 +36,11 @@
     <string name="post_new_item">Post New Item</string>
     <string name="start_bid">Start Bid</string>
     <string name="current_highest_bid">Current Highest Bid</string>
+    <string name="enter_bid_amount">Enter Bid Amount</string>
+    <string name="add_amount">Enter Amount to Bid</string>
+    <string name="current_highest_bidder">Highest Bidder</string>
+    <string name="owner">Owner</string>
+    <string name="created">Created</string>
+    <string name="in_progress">In Progress</string>
+    <string name="completed">Completed</string>
 </resources>
