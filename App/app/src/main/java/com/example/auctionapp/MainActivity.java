@@ -49,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.cash_menu:
                 Log.d(TAG, "onOptionsItemSelected: open add cash activity");
+                Intent intent = new Intent(MainActivity.this, AddMoney.class);
+                startActivity(intent);
                 return true;
             case R.id.logout:
                 FirebaseAuth.getInstance().signOut();

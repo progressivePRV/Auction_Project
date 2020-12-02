@@ -52,44 +52,49 @@ public class SignUpActivity extends AppCompatActivity {
                  email_et = findViewById(R.id.editTextEmail);
                  pass_et = findViewById(R.id.editTextChoosePassword);
                  rePass_et = findViewById(R.id.editTextRepeatPassword);
+                cash_et = findViewById(R.id.cash_et);
 
                 if(checkValidations(fname_et) && checkValidations(lname_et) &&
                         checkValidations(email_et) && checkEmailValidations(email_et)
-                        && checkValidations(pass_et) && checkValidations(rePass_et)) {
-                    String password = pass_et.getText().toString().trim();
-                    String repeatPassword = rePass_et.getText().toString().trim();
-                    if (password.equals(repeatPassword)) {
-                        showProgressBarDialog();
-                        mAuth.createUserWithEmailAndPassword(email_et.getText().toString().trim(), password)
-                                .addOnCompleteListener(SignUpActivity.this, new OnCompleteListener<AuthResult>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<AuthResult> task) {
-                                        if (task.isSuccessful()) {
-                                            // Sign in success, update UI with the signed-in user's information
-                                            Log.d("demo", "createUserWithEmail:success");
-                                            Toast.makeText(SignUpActivity.this, "User Successfully created!", Toast.LENGTH_LONG).show();
-                                            FirebaseUser user = mAuth.getCurrentUser();
-                                            hideProgressBarDialog();
-                                            Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
-                                            startActivity(intent);
-                                            CallCreateUser();
-                                            finish();
+                        && checkValidations(pass_et) && checkValidations(rePass_et) &&checkValidations(cash_et)) {
+                    if(Double.parseDouble(cash_et.getText().toString()) < 1){
+                        cash_et.setError("Amount should be greater than 1");
+                    }else{
+                        String password = pass_et.getText().toString().trim();
+                        String repeatPassword = rePass_et.getText().toString().trim();
+                        if (password.equals(repeatPassword)) {
+                            showProgressBarDialog();
+                            mAuth.createUserWithEmailAndPassword(email_et.getText().toString().trim(), password)
+                                    .addOnCompleteListener(SignUpActivity.this, new OnCompleteListener<AuthResult>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<AuthResult> task) {
+                                            if (task.isSuccessful()) {
+                                                // Sign in success, update UI with the signed-in user's information
+                                                Log.d("demo", "createUserWithEmail:success");
+                                                Toast.makeText(SignUpActivity.this, "User Successfully created!", Toast.LENGTH_LONG).show();
+                                                FirebaseUser user = mAuth.getCurrentUser();
+                                                hideProgressBarDialog();
+                                                Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
+                                                startActivity(intent);
+                                                CallCreateUser();
+                                                finish();
 //                                            intent.putExtra("user", user.getUid());
 //                                            startActivityForResult(intent, 1000);
-                                        } else {
-                                            // If sign in fails, display a message to the user.
-                                            Log.w("demo", "createUserWithEmail:failure", task.getException());
-                                            Toast.makeText(SignUpActivity.this, "Create user failed!" + task.getException(),
-                                                    Toast.LENGTH_SHORT).show();
-                                            //updateUI(null);
-                                            hideProgressBarDialog();
+                                            } else {
+                                                // If sign in fails, display a message to the user.
+                                                Log.w("demo", "createUserWithEmail:failure", task.getException());
+                                                Toast.makeText(SignUpActivity.this, "Create user failed!" + task.getException(),
+                                                        Toast.LENGTH_SHORT).show();
+                                                //updateUI(null);
+                                                hideProgressBarDialog();
+                                            }
                                         }
-                                    }
-                                });
-                    } else {
-                        Toast.makeText(SignUpActivity.this, "Both passwords should match", Toast.LENGTH_SHORT).show();
+                                    });
+                        } else {
+                            Toast.makeText(SignUpActivity.this, "Both passwords should match", Toast.LENGTH_SHORT).show();
+                        }
+                        hideProgressBarDialog();
                     }
-                    hideProgressBarDialog();
                 }
             }
         });
@@ -119,7 +124,7 @@ public class SignUpActivity extends AppCompatActivity {
                         Map<String ,Object> data = new HashMap<>();
                         data.put("firstName",fname_et.getText().toString());
                         data.put("lastName",lname_et.getText().toString());
-                        data.put("balance",200);
+                        data.put("balance",Double.parseDouble(cash_et.getText().toString()));
                         data.put("deviceToken",token);
 //                        data.put("uid","a1");
                         mFunctions.getHttpsCallable("createUser")
