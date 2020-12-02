@@ -160,7 +160,7 @@ public class CurrentBidFrag extends Fragment implements AdapterAllAuctions.Inter
                                 mAdapter.notifyDataSetChanged();
                             }else{
                                 hideProgressBarDialog();
-                                Toast.makeText(getActivity(), "Sorry No Auction available at this moment", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), "You have not bidded on any Items. Check the All Actions tab to start your bid", Toast.LENGTH_SHORT).show();
                             }
                         }else{
                             hideProgressBarDialog();
@@ -259,7 +259,7 @@ public class CurrentBidFrag extends Fragment implements AdapterAllAuctions.Inter
                     public void onComplete(@NonNull Task<HttpsCallableResult> task) {
                         if (task.isSuccessful()) {
                             Log.d(TAG, "onComplete: Bid On item Successfull");
-                            Toast.makeText(getActivity(), "Bidded Successfully", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), "Bid gave up successfully", Toast.LENGTH_SHORT).show();
                             hideProgressBarDialog();
                             auctionItemsArrayList.clear();
                             getAllAuctions();
