@@ -11,6 +11,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -57,6 +58,7 @@ public class AllAuctionFrag extends Fragment implements AdapterAllAuctions.Inter
     private RecyclerView.LayoutManager layoutManager;
     ArrayList<AuctionItems> auctionItemsArrayList = new ArrayList<>();
     private ProgressDialog progressDialog;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     private FirebaseAuth mAuth;
     // TODO: Rename and change types of parameters
@@ -114,6 +116,17 @@ public class AllAuctionFrag extends Fragment implements AdapterAllAuctions.Inter
         recyclerView.setLayoutManager(layoutManager);
         mAdapter = new AdapterAllAuctions(auctionItemsArrayList, this);
         recyclerView.setAdapter(mAdapter);
+
+        swipeRefreshLayout = getView().findViewById(R.id.swipe);
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                auctionItemsArrayList.clear();
+                getAllAuctions();
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
     }
 
     private void getAllAuctions() {
