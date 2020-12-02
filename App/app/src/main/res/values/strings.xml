@@ -48,4 +48,8 @@
     <string name="ok">OK</string>
     <string name="channel_name">Auction_app_channel_name</string>
     <string name="channel_description">Notification_from_Auction_App</string>
+    <string name="auction_end_date">Auction Completed Date</string>
+    <string name="won_bid_amount">Won Bid Amount</string>
+    <string name="balance_amount">Balance Amount</string>
+    <string name="hold_amount">Hold Amount</string>
 </resources>

@@ -8,12 +8,19 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.functions.FirebaseFunctions;
 import com.google.firebase.functions.HttpsCallableResult;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,6 +31,7 @@ public class AddMoney extends AppCompatActivity {
     private EditText textAddCashAmount;
     private FirebaseFunctions mFunctions;
     private ProgressDialog progressDialog;
+    private TextView addMoneyBalanceAmount, addMoneyHoldAmount;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,6 +39,11 @@ public class AddMoney extends AppCompatActivity {
 
         mFunctions = FirebaseFunctions.getInstance();
         textAddCashAmount = findViewById(R.id.textAddCashAmount);
+
+        addMoneyBalanceAmount = findViewById(R.id.addMoneyBalanceAmount);
+        addMoneyHoldAmount = findViewById(R.id.addMoneyHoldAmount);
+
+        getUsersAmount();
 
         findViewById(R.id.buttonAddCash).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,6 +82,38 @@ public class AddMoney extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void getUsersAmount() {
+        showProgressBarDialog();
+        mFunctions.getHttpsCallable("getUser")
+                .call()
+                .addOnCompleteListener(new OnCompleteListener<HttpsCallableResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<HttpsCallableResult> task) {
+                        if (task.isSuccessful()){
+                            Log.d(TAG, "onComplete: device add cash to the server successful");
+                            Gson g = new Gson();
+                            String json = g.toJson(task.getResult().getData());
+                            Log.d("demo",json);
+                            try {
+                                JSONObject root = new JSONObject(json);
+                                JSONObject result = root.getJSONObject("result");
+                                Log.d("demo", result.toString());
+                                addMoneyBalanceAmount.setText("$ "+result.getDouble("balance"));
+                                addMoneyHoldAmount.setText("$ "+result.getDouble("hold"));
+                            } catch (JSONException e) {
+                                hideProgressBarDialog();
+                                e.printStackTrace();
+                            }
+                            hideProgressBarDialog();
+                        }else{
+                            Log.d(TAG, "onComplete: error while sending add cash to the server"+task.getException().getMessage());
+                            Toast.makeText(AddMoney.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                            hideProgressBarDialog();
+                        }
+                    }
+                });
     }
 
     public boolean checkValidations(EditText editText){
