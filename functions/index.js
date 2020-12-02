@@ -476,6 +476,29 @@ exports.getAuctionItems = functions.https.onCall(async(data,context)=>{
 
 });
 
+exports.getCreatedItems = functions.https.onCall(async(data,context)=>{
+    var uid = isAuthenticated(data,context);
+
+    const auctionRef = admin.firestore().collection('Auctions').where('owner_id','==',uid);
+
+    try{
+        return await admin.firestore().runTransaction(async(transaction)=>{
+            const snapshot = await transaction.get(auctionRef);
+            var inProgressAuctions = [];
+            snapshot.forEach(doc=>{
+                inProgressAuctions.push({"id":doc.id,"data":doc.data()});
+                
+            });
+
+            return {'result':inProgressAuctions};
+        });
+    }
+    catch(e){
+        throw new functions.https.HttpsError('invalid-argument', e.message);
+    }
+
+});
+
 exports.getWonItem = functions.https.onCall(async(data,context)=>{
     var uid = isAuthenticated(data,context);
 
