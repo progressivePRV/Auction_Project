@@ -143,6 +143,10 @@ exports.postNewItem = functions.https.onCall(async(data,context)=>{
         throw new functions.https.HttpsError('invalid-argument', 'minimum final bid should be present and it should be a number with value greater than 0');
     }
 
+    if(data.startBid>=data.minFinalBid){
+        throw new functions.https.HttpsError('invalid-argument', 'minimum final bid cannot be smaller that or equal to the start bid');
+    }
+
     const userRef = admin.firestore().collection('users').doc(""+uid);
     var msg = "";
 
