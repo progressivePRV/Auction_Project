@@ -23,16 +23,18 @@ public class AuctionItems {
 //    }
 //    ]
 
-    String id
+    String    id
             , owner_id
             , item_name
             , auction_start_date
-            , auction_status;
+            , auction_status
+            , current_highest_bid_user;
 
     Double  current_highest_bid
             , start_bid;
 
 //    ArrayList<Biders> bidders = new ArrayList<>();
+
 
     @Override
     public String toString() {
@@ -41,9 +43,10 @@ public class AuctionItems {
                 ", owner_id='" + owner_id + '\'' +
                 ", item_name='" + item_name + '\'' +
                 ", auction_start_date='" + auction_start_date + '\'' +
-                ", start_bid='" + start_bid + '\'' +
-                ", current_highest_bid='" + current_highest_bid + '\'' +
-                ", auction_status=" + auction_status +
+                ", auction_status='" + auction_status + '\'' +
+                ", current_highest_bid_user='" + current_highest_bid_user + '\'' +
+                ", current_highest_bid=" + current_highest_bid +
+                ", start_bid=" + start_bid +
                 '}';
     }
 }

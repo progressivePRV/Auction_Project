@@ -36,4 +36,20 @@
     <string name="post_new_item">Post New Item</string>
     <string name="start_bid">Start Bid</string>
     <string name="current_highest_bid">Current Highest Bid</string>
+    <string name="enter_bid_amount">Enter Bid Amount</string>
+    <string name="add_amount">Enter Amount to Bid</string>
+    <string name="current_highest_bidder">Highest Bidder</string>
+    <string name="owner">Owner</string>
+    <string name="created">Created</string>
+    <string name="in_progress">In Progress</string>
+    <string name="completed">Completed</string>
+    <string name="notification_channel">Auction_App_Notification_Channel</string>
+    <string name="notification_channel_id">Auction_App_FMC_Channel_ID</string>
+    <string name="ok">OK</string>
+    <string name="channel_name">Auction_app_channel_name</string>
+    <string name="channel_description">Notification_from_Auction_App</string>
+    <string name="auction_end_date">Auction Completed Date</string>
+    <string name="won_bid_amount">Won Bid Amount</string>
+    <string name="balance_amount">Balance Amount</string>
+    <string name="hold_amount">Hold Amount</string>
 </resources>

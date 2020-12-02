@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -30,6 +32,7 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseFunctions mFunctions;
     private ProgressDialog progressDialog;
+    private NotificationManager mNotifyManager;
     private static final String TAG = "okay_LoginActivity";
 
     @Override
@@ -42,10 +45,11 @@ public class LoginActivity extends AppCompatActivity {
         if(currentUser!=null){
             Log.d("demo","CurrentUser" + currentUser.getDisplayName());
             hideProgressBarDialog();
-            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-            intent.putExtra("user",currentUser.getUid());
-            startActivity(intent);
-            finish();
+            CheckForIntentData();
+//            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+//            intent.putExtra("user",currentUser.getUid());
+//            startActivity(intent);
+//            finish();
         } else{
             Log.d("demo","Please login to go see your contacts");
             hideProgressBarDialog();
@@ -58,7 +62,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         setTitle("Login");
-        CheckForIntentData();
+        CreateNOtificationChannel();
         mAuth = FirebaseAuth.getInstance();
         mFunctions = FirebaseFunctions.getInstance();
 
@@ -106,6 +110,18 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    private void CreateNOtificationChannel() {
+            mNotifyManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            // Create a NotificationChannel
+            NotificationChannel notificationChannel = new NotificationChannel(getString(R.string.notification_channel_id),
+                    getString(R.string.notification_channel), NotificationManager
+                    .IMPORTANCE_HIGH);
+            notificationChannel.setDescription(getString(R.string.channel_description));
+            mNotifyManager.createNotificationChannel(notificationChannel);
+        }
     }
 
     private void SendRegistrationToServer() {
@@ -158,11 +174,26 @@ public class LoginActivity extends AppCompatActivity {
 
     private void CheckForIntentData() {
         Intent i = getIntent();
+        Log.d(TAG, "CheckForIntentData: intent was not empty in login Activity");
+        Log.d(TAG, "CheckForIntentData: intent action=>"+i.getAction());
+        Log.d(TAG, "CheckForIntentData: intent data string=>"+i.getDataString());
+//        Bundle b = i.getExtras();
+//        Log.d(TAG, "CheckForIntentData: bundle.data.code=>"+b.getString("Code"));
+        Log.d(TAG, "CheckForIntentData: intent data one=>"+i.getStringExtra("one"));
+        Log.d(TAG, "CheckForIntentData: intent notification body if possible=>"+i.getStringExtra("body"));
+        Log.d(TAG, "CheckForIntentData: intent notification data if possible=>"+i.getData());
+        Log.d(TAG, "CheckForIntentData: data.code=>"+i.getStringExtra("Code"));
+        Intent i1 = new Intent(this,MainActivity.class);
         if(i!=null){
-            Log.d(TAG, "CheckForIntentData: intent was not empty in login Activity");
-            Log.d(TAG, "CheckForIntentData: intent action=>"+i.getAction());
-            Log.d(TAG, "CheckForIntentData: intent data one=>"+i.getStringExtra("one"));
+            if (i.hasExtra("Code")){
+                Log.d(TAG, "CheckForIntentData: ");
+                i1.putExtra("Code",i.getStringExtra("Code"));
+                i1.putExtra("item_id",i.getStringExtra("itemId"));
+//                i1.putExtra("body",i.getStringExtra())
+            }
         }
+        startActivity(i1);
+        finish();
     }
 
     public void hideProgressBarDialog()

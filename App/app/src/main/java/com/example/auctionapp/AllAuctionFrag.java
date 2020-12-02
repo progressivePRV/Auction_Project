@@ -1,11 +1,13 @@
 package com.example.auctionapp;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,11 +16,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.common.reflect.TypeToken;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.functions.FirebaseFunctions;
 import com.google.firebase.functions.HttpsCallableResult;
 import com.google.gson.Gson;
@@ -38,7 +44,7 @@ import java.util.Map;
  * Use the {@link AllAuctionFrag#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AllAuctionFrag extends Fragment {
+public class AllAuctionFrag extends Fragment implements AdapterAllAuctions.InteractWithRecyclerView{
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -52,6 +58,7 @@ public class AllAuctionFrag extends Fragment {
     ArrayList<AuctionItems> auctionItemsArrayList = new ArrayList<>();
     private ProgressDialog progressDialog;
 
+    private FirebaseAuth mAuth;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -99,23 +106,14 @@ public class AllAuctionFrag extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        mAuth = FirebaseAuth.getInstance();
         mFunctions = FirebaseFunctions.getInstance();
 
         recyclerView = getView().findViewById(R.id.allAuctionsRecyclerView);
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
-        mAdapter = new AdapterAllAuctions(auctionItemsArrayList, getActivity());
+        mAdapter = new AdapterAllAuctions(auctionItemsArrayList, this);
         recyclerView.setAdapter(mAdapter);
-
-        getView().findViewById(R.id.allAuctionsPostNewItemButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), CreateAuction.class);
-                startActivity(intent);
-            }
-        });
-
     }
 
     private void getAllAuctions() {
@@ -143,11 +141,15 @@ public class AllAuctionFrag extends Fragment {
                                     auctionItems.start_bid = dataObject.getDouble("start_bid");
                                     auctionItems.auction_start_date = dataObject.getString("auction_start_date");
                                     auctionItems.auction_status = dataObject.getString("auction_status");
-                                    if(auctionItems.auction_status.equals("created")){
-                                        auctionItems.current_highest_bid = 0.0;
-                                    }else{
+
+                                    try{
                                         auctionItems.current_highest_bid = dataObject.getDouble("current_highest_bid");
+                                        auctionItems.current_highest_bid_user = dataObject.getString("current_highest_bid_user");
+                                    }catch(Exception e){
+                                        auctionItems.current_highest_bid = 0.0;
+                                        auctionItems.current_highest_bid_user = "";
                                     }
+
                                     auctionItemsArrayList.add(auctionItems);
                                 }
                                 Log.d("demo", "auctionItemsArrayList is ==> " + auctionItemsArrayList.toString());
@@ -165,7 +167,7 @@ public class AllAuctionFrag extends Fragment {
                         }else{
                             hideProgressBarDialog();
                             Log.d(TAG, "onComplete: All Auctions error occurred"+task.getException().getMessage());
-                            Toast.makeText(getActivity(), "Some error occurred internally", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -175,6 +177,7 @@ public class AllAuctionFrag extends Fragment {
     public void onResume() {
         super.onResume();
         Log.d(TAG, "onResume: in allAuction Frag");
+        auctionItemsArrayList.clear();
         getAllAuctions();
     }
 
@@ -189,5 +192,77 @@ public class AllAuctionFrag extends Fragment {
     public void hideProgressBarDialog()
     {
         progressDialog.dismiss();
+    }
+
+    @Override
+    public void getDetails(AuctionItems auctionItems) {
+        if(auctionItems.owner_id.equals(mAuth.getUid())){
+            Toast.makeText(getActivity(), "As you are the owner, you cannot bid on this item", Toast.LENGTH_SHORT).show();
+        }else if(auctionItems.current_highest_bid_user.equals(mAuth.getUid())){
+            Toast.makeText(getActivity(), "As you are the current highest bidder, you cannot bid on it again", Toast.LENGTH_SHORT).show();
+        }else{
+            //The user can bid on this item
+            showBidDialog(auctionItems.id);
+        }
+    }
+
+    private void showBidDialog(String id) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        final View customLayout = getActivity().getLayoutInflater().inflate(R.layout.dialog_bid, null);
+        builder.setView(customLayout)
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener(){
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        EditText amountBid = customLayout.findViewById(R.id.dialogEnterBidAmount);
+                        if(checkDoubleValidations(amountBid)){
+                            callBidOnItem(id, Double.parseDouble(amountBid.getText().toString()));
+                        }
+                    }
+                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    private void callBidOnItem(String id, Double amountBid) {
+        showProgressBarDialog();
+        Map<String ,Object> data = new HashMap<>();
+        data.put("itemId",id);
+        data.put("bid",amountBid);
+        mFunctions.getHttpsCallable("bidOnItem")
+                .call(data)
+                .addOnCompleteListener(new OnCompleteListener<HttpsCallableResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<HttpsCallableResult> task) {
+                        if (task.isSuccessful()){
+                            Log.d(TAG, "onComplete: Bid On item Successfull");
+                            Toast.makeText(getActivity(), "Bidded Successfully", Toast.LENGTH_SHORT).show();
+                            hideProgressBarDialog();
+                            auctionItemsArrayList.clear();
+                            getAllAuctions();
+                        }else{
+                            Log.d(TAG, "onComplete: error while bidding on item"+task.getException().getMessage());
+                            Toast.makeText(getActivity(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                            Log.d(TAG, "onComplete: data=>"+data);
+                            hideProgressBarDialog();
+                        }
+                    }
+                });
+    }
+
+    public boolean checkDoubleValidations(EditText editText){
+        if(editText.getText().toString().trim().equals("")){
+            editText.setError("Cannot be empty");
+            return false;
+        }else if(Double.parseDouble(editText.getText().toString()) <= 0){
+            editText.setError("Should be atleast $1.00");
+            return false;
+        }else{
+            return true;
+        }
     }
 }
