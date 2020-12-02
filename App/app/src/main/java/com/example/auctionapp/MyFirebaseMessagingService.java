@@ -29,6 +29,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String TAG = "okay_MyFirebaseMessagingService";
     private FirebaseFunctions mFunctions = FirebaseFunctions.getInstance();
+    int increment = 1;
 
     /**
      * Called if FCM registration token is updated. This may occur if the security of
@@ -92,17 +93,19 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 //        notificationIntent.putExtra("item_id",data.get("itemId"));
         PendingIntent notoficationPendingIntend = PendingIntent.getActivity(getBaseContext(),0,notificationIntent,PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, getString(R.string.notification_channel_id))
-                .setLargeIcon(BitmapFactory.decodeResource(getResources(),R.drawable.owver_created_auctions))
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(),R.drawable.notification_icon))
                 .setSmallIcon(R.drawable.notification_icon)
                 .setContentTitle(title)
                 .setContentText(body)
                 .setContentIntent(notoficationPendingIntend)
                 .setAutoCancel(true)
+                .setStyle(new NotificationCompat.BigTextStyle()
+                        .bigText(body))
                 .setDefaults(NotificationCompat.DEFAULT_ALL)
                 .setPriority(NotificationCompat.PRIORITY_HIGH);
 
         NotificationManager mNotifyManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        mNotifyManager.notify(0,builder.build());
+        mNotifyManager.notify(increment++,builder.build());
 //        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
 //        Random random =  new Random();
 //        int random_int = random.nextInt();
