@@ -31,6 +31,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -177,6 +179,8 @@ public class AuctionPlacedFrag extends Fragment implements AdapterAuctionPlaced.
                                 e.printStackTrace();
                             }
                             if(auctionItemsArrayList.size()>0){
+                                //sorting the arraylist here
+                                sortTheArrayList();
                                 hideProgressBarDialog();
                                 mAdapter.notifyDataSetChanged();
                             }else{
@@ -191,6 +195,31 @@ public class AuctionPlacedFrag extends Fragment implements AdapterAuctionPlaced.
                         }
                     }
                 });
+    }
+
+    private void sortTheArrayList() {
+        Collections.sort(auctionItemsArrayList, new Comparator<AuctionItems>(){
+            public int compare(AuctionItems o1, AuctionItems o2){
+                int start = 0;
+                int end = 0;
+                if(o1.auction_status.equals("created")){
+                    start = 0;
+                } else if(o1.auction_status.equals("in_progress")){
+                    start = 1;
+                } else if(o1.auction_status.equals("complete")){
+                    start = 2;
+                }
+
+                if(o2.auction_status.equals("created")){
+                    end = 0;
+                } else if(o2.auction_status.equals("in_progress")){
+                    end = 1;
+                } else if(o2.auction_status.equals("complete")){
+                    end = 2;
+                }
+                return start - end;
+            }
+        });
     }
 
     @Override
