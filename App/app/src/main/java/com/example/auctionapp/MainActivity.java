@@ -11,6 +11,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -45,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
     private static final int GOOGLE_API_REQUEST_RESULT = 1111;
     BroadcastReceiver mbroadcastReceiver;
     BottomNavigationView bottomNav;
+    private FirebaseFunctions mFunctions;
+    private ProgressDialog progressDialog;
 
 
     @Override
@@ -63,15 +66,33 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
                 return true;
             case R.id.logout:
-                FirebaseAuth.getInstance().signOut();
-                Toast.makeText(this, "Successfully Logged Out", Toast.LENGTH_SHORT).show();
-                Intent i = new Intent(this,LoginActivity.class);
-                startActivity(i);
-                finish();
+                showProgressBarDialog();
+                CallDeleteDeviceToken();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void CallDeleteDeviceToken() {
+        mFunctions.getHttpsCallable("deleteDeviceToken")
+                .call()
+                .addOnCompleteListener(new OnCompleteListener<HttpsCallableResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<HttpsCallableResult> task) {
+                        if (task.isSuccessful()){
+                            FirebaseAuth.getInstance().signOut();
+                            Toast.makeText(MainActivity.this, "Successfully Logged Out", Toast.LENGTH_SHORT).show();
+                            Intent i = new Intent(MainActivity.this,LoginActivity.class);
+                            startActivity(i);
+                            finish();
+                        }else{
+                            Toast.makeText(MainActivity.this, "Loggout failed", Toast.LENGTH_SHORT).show();
+                        }
+                        hideProgressBarDialog();
+                    }
+                });
+
     }
 
     @Override
@@ -125,6 +146,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mFunctions = FirebaseFunctions.getInstance();
 
 //        RetriveFirebaseMessageingToken();
 
@@ -185,6 +207,19 @@ public class MainActivity extends AppCompatActivity {
         }else if(resultCode == RESULT_CANCELED && requestCode == GOOGLE_API_REQUEST_RESULT){
             Log.d(TAG, "onActivityResult: google api/play service was disabled");
         }
+    }
+
+    public void showProgressBarDialog()
+    {
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Loading");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+    }
+
+    public void hideProgressBarDialog()
+    {
+        progressDialog.dismiss();
     }
 
 }

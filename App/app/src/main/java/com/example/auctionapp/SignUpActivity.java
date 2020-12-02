@@ -71,13 +71,9 @@ public class SignUpActivity extends AppCompatActivity {
                                             if (task.isSuccessful()) {
                                                 // Sign in success, update UI with the signed-in user's information
                                                 Log.d("demo", "createUserWithEmail:success");
-                                                Toast.makeText(SignUpActivity.this, "User Successfully created!", Toast.LENGTH_LONG).show();
+//                                                Toast.makeText(SignUpActivity.this, "User Successfully created!", Toast.LENGTH_LONG).show();
                                                 FirebaseUser user = mAuth.getCurrentUser();
-                                                hideProgressBarDialog();
-                                                Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
-                                                startActivity(intent);
                                                 CallCreateUser();
-                                                finish();
 //                                            intent.putExtra("user", user.getUid());
 //                                            startActivityForResult(intent, 1000);
                                             } else {
@@ -93,7 +89,7 @@ public class SignUpActivity extends AppCompatActivity {
                         } else {
                             Toast.makeText(SignUpActivity.this, "Both passwords should match", Toast.LENGTH_SHORT).show();
                         }
-                        hideProgressBarDialog();
+//                        hideProgressBarDialog();
                     }
                 }
             }
@@ -116,6 +112,8 @@ public class SignUpActivity extends AppCompatActivity {
                         if (!task.isSuccessful()) {
                             Log.d(TAG, "onComplete: error while generating firebase messaging token");
                             //Log.w(TAG, "Fetching FCM registration token failed", task.getException());
+                            DeleteUserFromFirebase();
+//                            hideProgressBarDialog();
                             return;
                         }
                         // Get new FCM registration token
@@ -133,10 +131,16 @@ public class SignUpActivity extends AppCompatActivity {
                                     @Override
                                     public void onComplete(@NonNull Task<HttpsCallableResult> task) {
                                         if (task.isSuccessful()){
-                                            Log.d(TAG, "onComplete: device toke sent to server successful");
+                                            Log.d(TAG, "onComplete: device toke sent to server successful and user is craeted on server");
+                                            Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
+                                            startActivity(intent);
+                                            hideProgressBarDialog();
+                                            finish();
                                         }else{
                                             Log.d(TAG, "onComplete: error while sending token to the server"+task.getException().getMessage());
+                                            Toast.makeText(SignUpActivity.this, "task.getException().getMessage()", Toast.LENGTH_SHORT).show();
                                             Log.d(TAG, "onComplete: data=>"+data);
+                                            DeleteUserFromFirebase();
                                         }
                                     }
                                 });
@@ -149,6 +153,25 @@ public class SignUpActivity extends AppCompatActivity {
 //    "rojatkar":"rojatkar",
 //    "balance":200
 //})
+
+    }
+
+    private void DeleteUserFromFirebase() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        user.delete()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "User account deleted.");
+                            Toast.makeText(SignUpActivity.this, "Create user failed!", Toast.LENGTH_SHORT).show();
+                        }else{
+                            Log.d(TAG, "onComplete: some error occured while deleting user from firebase");
+                        }
+                        hideProgressBarDialog();
+                    }
+                });
 
     }
 
