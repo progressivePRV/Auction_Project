@@ -176,12 +176,17 @@ public class LoginActivity extends AppCompatActivity {
         Intent i = getIntent();
         Log.d(TAG, "CheckForIntentData: intent was not empty in login Activity");
         Log.d(TAG, "CheckForIntentData: intent action=>"+i.getAction());
+        Log.d(TAG, "CheckForIntentData: intent data string=>"+i.getDataString());
+//        Bundle b = i.getExtras();
+//        Log.d(TAG, "CheckForIntentData: bundle.data.code=>"+b.getString("Code"));
         Log.d(TAG, "CheckForIntentData: intent data one=>"+i.getStringExtra("one"));
         Log.d(TAG, "CheckForIntentData: intent notification body if possible=>"+i.getStringExtra("body"));
         Log.d(TAG, "CheckForIntentData: intent notification data if possible=>"+i.getData());
+        Log.d(TAG, "CheckForIntentData: data.code=>"+i.getStringExtra("Code"));
         Intent i1 = new Intent(this,MainActivity.class);
         if(i!=null){
             if (i.hasExtra("Code")){
+                Log.d(TAG, "CheckForIntentData: ");
                 i1.putExtra("Code",i.getStringExtra("Code"));
                 i1.putExtra("item_id",i.getStringExtra("itemId"));
 //                i1.putExtra("body",i.getStringExtra())
