@@ -1,8 +1,17 @@
 package com.example.auctionapp;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Intent;
+import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.util.Log;
+import android.widget.Switch;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -10,9 +19,11 @@ import com.google.firebase.functions.FirebaseFunctions;
 import com.google.firebase.functions.HttpsCallableResult;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.google.gson.JsonObject;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
@@ -53,8 +64,49 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
 //        super.onMessageReceived(remoteMessage);
-        Log.d(TAG, "onMessageReceived: notification received while app was in foreground, message was=>"+remoteMessage.getNotification().getBody());
-        Log.d(TAG, "onMessageReceived: remoteMessage.getData()=>"+remoteMessage.getData());
+        String title = remoteMessage.getNotification().getTitle();
+        String body = remoteMessage.getNotification().getBody();
+        Map<String, String> data = remoteMessage.getData();
+        String channelId = remoteMessage.getNotification().getChannelId();
+        Log.d(TAG, "onMessageReceived: notification received while app was in foreground, message was=>"+body);
+        Log.d(TAG, "onMessageReceived: remoteMessage.getData()=>"+data);
+        SendNotification(title,body,data);
+//        createNotificationChannel(channelId);
 
+//        Intent i =  new Intent();
+//        i.putExtra("msg",body);
+//        i.putExtra("Code",data.get("Code"));
+//        i.putExtra("item_id",data.get("itemId"));
+//        i.setAction("My_custom_action");
+//        sendBroadcast(i);
+
+//        Intent i =  new Intent(android.intent.action.custom_to_my_app);
+//        i.putExtra("msg",body);
+//        startActivity(i);
     }
+
+    void SendNotification(String title,String body,Map<String, String> data){
+        Intent notificationIntent = new Intent("this, MainActivity.class");
+//        String Code = data.get("Code");
+//        notificationIntent.putExtra("Code",Code);
+//        notificationIntent.putExtra("item_id",data.get("itemId"));
+        PendingIntent notoficationPendingIntend = PendingIntent.getActivity(getBaseContext(),0,notificationIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, getString(R.string.notification_channel_id))
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(),R.drawable.owver_created_auctions))
+                .setSmallIcon(R.drawable.owver_created_auctions)
+                .setContentTitle(title)
+                .setContentText(body)
+                .setContentIntent(notoficationPendingIntend)
+                .setAutoCancel(true)
+                .setDefaults(NotificationCompat.DEFAULT_ALL)
+                .setPriority(NotificationCompat.PRIORITY_HIGH);
+
+        NotificationManager mNotifyManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        mNotifyManager.notify(0,builder.build());
+//        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+//        Random random =  new Random();
+//        int random_int = random.nextInt();
+// notificationId is a unique int for each notification that you must define
+    }
+
 }

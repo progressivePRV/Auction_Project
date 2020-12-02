@@ -43,4 +43,9 @@
     <string name="created">Created</string>
     <string name="in_progress">In Progress</string>
     <string name="completed">Completed</string>
+    <string name="notification_channel">Auction_App_Notification_Channel</string>
+    <string name="notification_channel_id">Auction_App_FMC_Channel_ID</string>
+    <string name="ok">OK</string>
+    <string name="channel_name">Auction_app_channel_name</string>
+    <string name="channel_description">Notification_from_Auction_App</string>
 </resources>
