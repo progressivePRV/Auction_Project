@@ -870,6 +870,7 @@ exports.sendNOtificationTrial = functions.https.onRequest(async(req,res)=>{
       token: registrationToken,
       android:{
           notification:{
+            channel_id: "Auction_App_FMC_Channel_ID",
             priority:"high"
           }
       }

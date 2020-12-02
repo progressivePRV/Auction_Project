@@ -149,7 +149,7 @@ public class WonAuctionsFrag extends Fragment {
                                 mAdapter.notifyDataSetChanged();
                             }else{
                                 hideProgressBarDialog();
-                                Toast.makeText(getActivity(), "Sorry No Auction available at this moment", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), "You have not won on any auction until now", Toast.LENGTH_SHORT).show();
                             }
                         }else{
                             hideProgressBarDialog();

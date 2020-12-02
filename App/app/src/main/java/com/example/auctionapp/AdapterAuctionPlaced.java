@@ -43,7 +43,12 @@ public class AdapterAuctionPlaced extends RecyclerView.Adapter<AdapterAuctionPla
         AuctionItems auctionItems = mDataset.get(position);
 
         holder.allAuctionsItemName.setText(auctionItems.item_name);
-        holder.allAuctionsCurrentHighestBid.setText("$" + auctionItems.current_highest_bid);
+        if(auctionItems.current_highest_bid == 0.0){
+            holder.allAuctionsCurrentHighestBid.setText("$ -.-");
+        }else{
+            holder.allAuctionsCurrentHighestBid.setText("$" + auctionItems.current_highest_bid);
+        }
+
         holder.allAuctionsStartBid.setText("$" + auctionItems.start_bid);
         holder.allAuctionsDate.setText(auctionItems.auction_start_date);
 

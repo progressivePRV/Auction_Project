@@ -167,7 +167,7 @@ public class AuctionPlacedFrag extends Fragment implements AdapterAuctionPlaced.
                                 mAdapter.notifyDataSetChanged();
                             }else{
                                 hideProgressBarDialog();
-                                Toast.makeText(getActivity(), "Sorry No Auction available at this moment", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), "You have not created any auction. Click on Post new item to create a auction", Toast.LENGTH_SHORT).show();
                             }
                         }else{
                             hideProgressBarDialog();
@@ -242,7 +242,7 @@ public class AuctionPlacedFrag extends Fragment implements AdapterAuctionPlaced.
                     public void onComplete(@NonNull Task<HttpsCallableResult> task) {
                         if (task.isSuccessful()) {
                             Log.d(TAG, "onComplete: Bid On item Successfull");
-                            Toast.makeText(getActivity(), "Cancelled the item successfully", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), "Item accepted successfully", Toast.LENGTH_SHORT).show();
                             hideProgressBarDialog();
                             auctionItemsArrayList.clear();
                             getAllAuctions();
