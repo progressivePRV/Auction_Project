@@ -21,4 +21,19 @@
     <string name="AutoFillHint" />
     <string name="logout">logout</string>
     <string name="default_notification_channel_id">Auction_App_FMC_Channel_ID</string>
+    <string name="add_cash">Please enter the amout to be added</string>
+    <string name="dollarSymbol">$</string>
+    <string name="amount">0.00</string>
+    <string name="add">Add</string>
+    <string name="Enter_amount">Enter Amount</string>
+    <string name="item_name">Item Name</string>
+    <string name="auction_Start_date">Auction Start Date</string>
+    <string name="start_bid_amount">Start Bid Amount</string>
+    <string name="minimum_final_bid">Minimum Final Bid</string>
+    <string name="enter_item_name">Enter Item Name</string>
+    <string name="enter_start_bid">Start Bid Amount</string>
+    <string name="post_item">Post Item</string>
+    <string name="post_new_item">Post New Item</string>
+    <string name="start_bid">Start Bid</string>
+    <string name="current_highest_bid">Current Highest Bid</string>
 </resources>
