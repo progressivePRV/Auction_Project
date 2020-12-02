@@ -85,6 +85,26 @@ exports.updateDeviceToken = functions.https.onCall(async(data,context)=>{
 
 });
 
+exports.deleteDeviceToken = functions.https.onCall(async(data,context)=>{
+    var uid = isAuthenticated(data,context);
+
+    const userRef = admin.firestore().collection('users').doc(""+uid);
+    const FieldValue = admin.firestore.FieldValue;
+
+    try{
+        return await admin.firestore().runTransaction(async(transaction)=>{
+             const res = await transaction.update(userRef, {device_token: FieldValue.delete()});
+             if(!res){
+                 throw new functions.https.HttpsError('invalid-argument', 'Some error occured');
+             }
+             return {result:"device token deleted"};
+        });
+    }
+    catch(e){
+        throw new functions.https.HttpsError('invalid-argument', e.message);
+    }
+
+});
 exports.addBalance = functions.https.onCall(async(data,context)=>{
     var uid = isAuthenticated(data,context);
 
@@ -299,13 +319,13 @@ exports.bidOnItem = functions.https.onCall(async(data,context)=>{
                 throw new functions.https.HttpsError('invalid-argument', 'some error occured.');
             }
 
-            if(oldBidderMessage){
+            if(oldBidderMessage && oldBidderMessage.token && oldBidderMessage.token.length>0){
                 var oldMsg = await admin.messaging().send(oldBidderMessage);
                 if(!oldMsg){
                     throw new functions.https.HttpsError('invalid-argument', 'some error occured.');
                 }
             }
-            if(newBidderMessage){
+            if(newBidderMessage && newBidderMessage.token && newBidderMessage.token.length>0){
                 var newMsg = await admin.messaging().send(newBidderMessage)
                 if(!newMsg){
                     throw new functions.https.HttpsError('invalid-argument', 'some error occured.');
@@ -331,7 +351,7 @@ exports.bidOnItem = functions.https.onCall(async(data,context)=>{
                 }
             }
 
-            if(minFinalBidMessage){
+            if(minFinalBidMessage && minFinalBidMessage.token && minFinalBidMessage.token.length>0){
                 var minBidMsg = await admin.messaging().send(minFinalBidMessage)
                 if(!minBidMsg){
                     throw new functions.https.HttpsError('invalid-argument', 'some error occured.');
@@ -435,16 +455,20 @@ exports.acceptBidOnItem = functions.https.onCall(async(data,context)=>{
                 token: buyerDoc.data().device_token,
             };
 
-            var ownerMsg = await admin.messaging().send(ownerMessage)
-            if(!ownerMsg){
-                throw new functions.https.HttpsError('invalid-argument', 'some error occured.');
+            if(ownerMessage.token && ownerMessage.token.length>0){
+                var ownerMsg = await admin.messaging().send(ownerMessage)
+                if(!ownerMsg){
+                    throw new functions.https.HttpsError('invalid-argument', 'some error occured.');
+                }
             }
             
-            var buyerMsg = await admin.messaging().send(buyerMessage)
-            if(!buyerMsg){
-                throw new functions.https.HttpsError('invalid-argument', 'some error occured.');
+            if(buyerMessage.token && buyerMessage.token.length>0){
+                var buyerMsg = await admin.messaging().send(buyerMessage)
+                if(!buyerMsg){
+                    throw new functions.https.HttpsError('invalid-argument', 'some error occured.');
+                }
             }
-    
+            
             return {'result':"auction settled"};
         });
     }
@@ -721,11 +745,13 @@ exports.cancelBid = functions.https.onCall(async(data,context)=>{
                 }
 
                 //send message 
-                var newMsg = await admin.messaging().send(message)
-                if(!newMsg){
-                    throw new functions.https.HttpsError('invalid-argument', 'some error occured.');
+                if(message.token && message.token.length>0){
+                    var newMsg = await admin.messaging().send(message)
+                    if(!newMsg){
+                        throw new functions.https.HttpsError('invalid-argument', 'some error occured.');
+                    }
                 }
-
+                
                 return {'result':"bid cancled successfully"}
 
             }
@@ -841,7 +867,7 @@ exports.cancelItem = functions.https.onCall(async(data,context)=>{
                 throw new functions.https.HttpsError('invalid-argument', 'some error occured.');
             }
 
-            if(message){
+            if(message && message.token && message.token.length>0){
                 var msg = await admin.messaging().send(message);
                 if(!msg){
                     throw new functions.https.HttpsError('invalid-argument', 'some error occured.');
