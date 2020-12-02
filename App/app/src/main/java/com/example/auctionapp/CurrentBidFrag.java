@@ -33,6 +33,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -169,6 +171,7 @@ public class CurrentBidFrag extends Fragment implements AdapterAllAuctions.Inter
                                 e.printStackTrace();
                             }
                             if(auctionItemsArrayList.size()>0){
+                                sortTheArrayList();
                                 hideProgressBarDialog();
                                 mAdapter.notifyDataSetChanged();
                             }else{
@@ -183,6 +186,28 @@ public class CurrentBidFrag extends Fragment implements AdapterAllAuctions.Inter
                         }
                     }
                 });
+    }
+
+
+    private void sortTheArrayList() {
+        String uid = mAuth.getUid();
+        Collections.sort(auctionItemsArrayList, new Comparator<AuctionItems>(){
+            public int compare(AuctionItems o1, AuctionItems o2){
+                int start = 0;
+                int end = 0;
+                if(o1.current_highest_bid_user.equals(uid)){
+                    start = 0;
+                }else{
+                    start = 1;
+                }
+                if(o2.current_highest_bid_user.equals(uid)){
+                    end = 0;
+                }else{
+                    end = 1;
+                }
+                return start - end;
+            }
+        });
     }
 
     @Override

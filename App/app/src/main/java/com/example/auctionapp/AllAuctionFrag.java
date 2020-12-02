@@ -37,6 +37,8 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -171,6 +173,7 @@ public class AllAuctionFrag extends Fragment implements AdapterAllAuctions.Inter
                                 e.printStackTrace();
                             }
                             if(auctionItemsArrayList.size()>0){
+                                sortTheArrayList();
                                 hideProgressBarDialog();
                                 mAdapter.notifyDataSetChanged();
                             }else{
@@ -187,12 +190,42 @@ public class AllAuctionFrag extends Fragment implements AdapterAllAuctions.Inter
                 });
     }
 
+
+
     @Override
     public void onResume() {
         super.onResume();
         Log.d(TAG, "onResume: in allAuction Frag");
         auctionItemsArrayList.clear();
         getAllAuctions();
+    }
+
+
+    private void sortTheArrayList() {
+        String uid = mAuth.getUid();
+        Collections.sort(auctionItemsArrayList, new Comparator<AuctionItems>(){
+            public int compare(AuctionItems o1, AuctionItems o2){
+                int start = 0;
+                int end = 0;
+                if(!o1.current_highest_bid_user.equals(uid) && !o1.owner_id.equals(uid)){
+                    start = 0;
+                }else if(o1.current_highest_bid_user.equals(uid) && !o1.owner_id.equals(uid)){
+                    start = 1;
+                }else if(!o1.current_highest_bid_user.equals(uid) && o1.owner_id.equals(uid)){
+                    start = 2;
+                }
+
+                if(!o2.current_highest_bid_user.equals(uid) && !o2.owner_id.equals(uid)){
+                    end = 0;
+                }else if(o2.current_highest_bid_user.equals(uid) && !o2.owner_id.equals(uid)){
+                    end = 1;
+                }else if(!o2.current_highest_bid_user.equals(uid) && o2.owner_id.equals(uid)){
+                    end = 2;
+                }
+
+                return start - end;
+            }
+        });
     }
 
     public void showProgressBarDialog()
