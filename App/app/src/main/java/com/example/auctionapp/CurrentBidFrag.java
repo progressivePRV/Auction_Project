@@ -303,9 +303,6 @@ public class CurrentBidFrag extends Fragment implements AdapterAllAuctions.Inter
         if(editText.getText().toString().trim().equals("")){
             editText.setError("Cannot be empty");
             return false;
-        }else if(Double.parseDouble(editText.getText().toString()) <= 0){
-            editText.setError("Should be atleast $1.00");
-            return false;
         }else{
             return true;
         }
