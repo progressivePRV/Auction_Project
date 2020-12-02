@@ -154,7 +154,7 @@ public class AllAuctionFrag extends Fragment implements AdapterAllAuctions.Inter
                                     auctionItems.start_bid = dataObject.getDouble("start_bid");
                                     auctionItems.auction_start_date = dataObject.getString("auction_start_date");
                                     auctionItems.auction_status = dataObject.getString("auction_status");
-
+                                    auctionItems.min_final_bid = dataObject.getDouble("min_final_bid");
                                     try{
                                         auctionItems.current_highest_bid = dataObject.getDouble("current_highest_bid");
                                         auctionItems.current_highest_bid_user = dataObject.getString("current_highest_bid_user");
@@ -175,6 +175,7 @@ public class AllAuctionFrag extends Fragment implements AdapterAllAuctions.Inter
                                 mAdapter.notifyDataSetChanged();
                             }else{
                                 hideProgressBarDialog();
+                                mAdapter.notifyDataSetChanged();
                                 Toast.makeText(getActivity(), "Sorry No Auction available at this moment", Toast.LENGTH_SHORT).show();
                             }
                         }else{

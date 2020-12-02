@@ -31,7 +31,8 @@ public class AuctionItems {
             , current_highest_bid_user;
 
     Double  current_highest_bid
-            , start_bid;
+            , start_bid
+            , min_final_bid;
 
 //    ArrayList<Biders> bidders = new ArrayList<>();
 
@@ -47,6 +48,7 @@ public class AuctionItems {
                 ", current_highest_bid_user='" + current_highest_bid_user + '\'' +
                 ", current_highest_bid=" + current_highest_bid +
                 ", start_bid=" + start_bid +
+                ", min_final_bid=" + min_final_bid +
                 '}';
     }
 }

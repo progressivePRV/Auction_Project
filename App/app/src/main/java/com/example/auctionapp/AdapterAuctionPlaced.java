@@ -32,7 +32,7 @@ public class AdapterAuctionPlaced extends RecyclerView.Adapter<AdapterAuctionPla
                                                                 int viewType) {
         // create a new view
         View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.list_all_auctions, parent, false);
+                .inflate(R.layout.list_all_auctions_placed, parent, false);
         MyViewHolder vh = new MyViewHolder(v);
         return vh;
     }
@@ -51,6 +51,7 @@ public class AdapterAuctionPlaced extends RecyclerView.Adapter<AdapterAuctionPla
 
         holder.allAuctionsStartBid.setText("$" + auctionItems.start_bid);
         holder.allAuctionsDate.setText(auctionItems.auction_start_date);
+        holder.auctions_placed_min_final_bid.setText("$" + auctionItems.min_final_bid);
 
         if(auctionItems.auction_status.equals("created")){
             holder.dividerAllAuction.setBackgroundColor(Color.parseColor("#ED8911"));
@@ -82,7 +83,7 @@ public class AdapterAuctionPlaced extends RecyclerView.Adapter<AdapterAuctionPla
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
 
-        TextView allAuctionsItemName, allAuctionsDate, allAuctionsStartBid, allAuctionsCurrentHighestBid;
+        TextView allAuctionsItemName, allAuctionsDate, allAuctionsStartBid, allAuctionsCurrentHighestBid, auctions_placed_min_final_bid;
         ConstraintLayout allAuctionsConstraintLayout;
         View dividerAllAuction;
 
@@ -94,6 +95,7 @@ public class AdapterAuctionPlaced extends RecyclerView.Adapter<AdapterAuctionPla
             allAuctionsCurrentHighestBid = view.findViewById(R.id.allAuctionsCurrentHighestBid);
             dividerAllAuction = view.findViewById(R.id.dividerAllAuction);
             allAuctionsConstraintLayout = view.findViewById(R.id.allAuctionsConstraintLayout);
+            auctions_placed_min_final_bid = view.findViewById(R.id.auctions_placed_min_final_bid);
         }
     }
 

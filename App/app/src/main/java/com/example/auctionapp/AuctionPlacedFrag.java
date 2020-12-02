@@ -149,6 +149,7 @@ public class AuctionPlacedFrag extends Fragment implements AdapterAuctionPlaced.
                             try {
                                 JSONObject root = new JSONObject(json);
                                 JSONArray jsonArray = root.getJSONArray("result");
+                                Log.d("demo","JSON Array => "+jsonArray.toString());
                                 for(int i=0; i<jsonArray.length(); i++){
                                     JSONObject resultObject = jsonArray.getJSONObject(i);
                                     AuctionItems auctionItems = new AuctionItems();
@@ -159,7 +160,7 @@ public class AuctionPlacedFrag extends Fragment implements AdapterAuctionPlaced.
                                     auctionItems.start_bid = dataObject.getDouble("start_bid");
                                     auctionItems.auction_start_date = dataObject.getString("auction_start_date");
                                     auctionItems.auction_status = dataObject.getString("auction_status");
-
+                                    auctionItems.min_final_bid = dataObject.getDouble("min_final_bid");
                                     try{
                                         auctionItems.current_highest_bid = dataObject.getDouble("current_highest_bid");
                                         auctionItems.current_highest_bid_user = dataObject.getString("current_highest_bid_user");
@@ -180,6 +181,7 @@ public class AuctionPlacedFrag extends Fragment implements AdapterAuctionPlaced.
                                 mAdapter.notifyDataSetChanged();
                             }else{
                                 hideProgressBarDialog();
+                                mAdapter.notifyDataSetChanged();
                                 Toast.makeText(getActivity(), "You have not created any auction. Click on Post new item to create a auction", Toast.LENGTH_SHORT).show();
                             }
                         }else{

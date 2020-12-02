@@ -29,7 +29,7 @@
     <string name="item_name">Item Name</string>
     <string name="auction_Start_date">Auction Start Date</string>
     <string name="start_bid_amount">Start Bid Amount</string>
-    <string name="minimum_final_bid">Minimum Final Bid</string>
+<!--    <string name="minimum_final_bid">Minimum Final Bid</string>-->
     <string name="enter_item_name">Enter Item Name</string>
     <string name="enter_start_bid">Start Bid Amount</string>
     <string name="post_item">Post Item</string>
@@ -52,4 +52,5 @@
     <string name="won_bid_amount">Won Bid Amount</string>
     <string name="balance_amount">Balance Amount</string>
     <string name="hold_amount">Hold Amount</string>
+    <string name="minimum_final_bid">Minimum Final Bid</string>
 </resources>
