@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -47,6 +48,7 @@ public class WonAuctionsFrag extends Fragment {
     ArrayList<WonItems> wonItemsArrayList = new ArrayList<>();
     private ProgressDialog progressDialog;
     private FirebaseAuth mAuth;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -105,12 +107,25 @@ public class WonAuctionsFrag extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
         mAdapter = new AdapterWonAuctions(wonItemsArrayList);
         recyclerView.setAdapter(mAdapter);
+
+
+        swipeRefreshLayout = getView().findViewById(R.id.swipe);
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                wonItemsArrayList.clear();
+                getWonItemsList();
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
     }
 
     @Override
     public void onResume() {
         super.onResume();
         Log.d(TAG, "onResume: wonAuction Frag");
+        wonItemsArrayList.clear();
         getWonItemsList();
     }
 

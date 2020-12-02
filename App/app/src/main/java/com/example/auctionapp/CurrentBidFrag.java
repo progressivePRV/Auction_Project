@@ -10,6 +10,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -55,6 +56,7 @@ public class CurrentBidFrag extends Fragment implements AdapterAllAuctions.Inter
     private RecyclerView.LayoutManager layoutManager;
     ArrayList<AuctionItems> auctionItemsArrayList = new ArrayList<>();
     private ProgressDialog progressDialog;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -112,6 +114,17 @@ public class CurrentBidFrag extends Fragment implements AdapterAllAuctions.Inter
         recyclerView.setLayoutManager(layoutManager);
         mAdapter = new AdapterAllAuctions(auctionItemsArrayList, this);
         recyclerView.setAdapter(mAdapter);
+
+        swipeRefreshLayout = getView().findViewById(R.id.swipe);
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                auctionItemsArrayList.clear();
+                getAllAuctions();
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
     }
 
     private void getAllAuctions() {
@@ -302,9 +315,6 @@ public class CurrentBidFrag extends Fragment implements AdapterAllAuctions.Inter
     public boolean checkDoubleValidations(EditText editText){
         if(editText.getText().toString().trim().equals("")){
             editText.setError("Cannot be empty");
-            return false;
-        }else if(Double.parseDouble(editText.getText().toString()) <= 0){
-            editText.setError("Should be atleast $1.00");
             return false;
         }else{
             return true;
