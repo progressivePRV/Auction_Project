@@ -93,7 +93,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         PendingIntent notoficationPendingIntend = PendingIntent.getActivity(getBaseContext(),0,notificationIntent,PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, getString(R.string.notification_channel_id))
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(),R.drawable.owver_created_auctions))
-                .setSmallIcon(R.drawable.owver_created_auctions)
+                .setSmallIcon(R.drawable.notification_icon)
                 .setContentTitle(title)
                 .setContentText(body)
                 .setContentIntent(notoficationPendingIntend)
